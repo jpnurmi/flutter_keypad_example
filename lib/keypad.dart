@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'delegate.dart';
-import 'connection.dart';
 import 'layout.dart';
 
 class VirtualKeypad extends StatefulWidget {
@@ -10,20 +9,21 @@ class VirtualKeypad extends StatefulWidget {
   _VirtualKeypadState createState() => _VirtualKeypadState();
 }
 
-class _VirtualKeypadState extends State<VirtualKeypad>
-    implements TextInputSource {
+class _VirtualKeypadState extends State<VirtualKeypad> with TextInputControl {
   TextInputDelegate? _delegate;
   TextInputLayout _layout = TextInputLayout();
 
   @override
   void initState() {
     super.initState();
-    TextInput.setSource(this);
+    TextInput.addInputControl(this);
+    TextInput.setCurrentInputControl(this);
   }
 
   @override
   void dispose() {
-    TextInput.setSource(TextInput.defaultSource);
+    TextInput.setCurrentInputControl(PlatformTextInputControl.instance);
+    TextInput.removeInputControl(this);
     super.dispose();
   }
 
@@ -52,24 +52,9 @@ class _VirtualKeypadState extends State<VirtualKeypad>
   }
 
   @override
-  void init() {}
-
-  @override
-  void cleanup() {}
-
-  @override
-  TextInputConnection attach(TextInputClient client) {
-    setState(() => _delegate = TextInputDelegate(client));
-
-    return CallbackConnection(
-      client,
-      onInputTypeChanged: (TextInputType inputType) {
-        _delegate!.setInputType(inputType);
-      },
-      onEditingValueSet: (TextEditingValue value) {
-        _delegate!.reset(value);
-      },
-    );
+  void attach(TextInputClient client, TextInputConfiguration configuration) {
+    setState(() => _delegate = TextInputDelegate(this));
+    updateConfig(configuration);
   }
 
   @override
@@ -78,7 +63,14 @@ class _VirtualKeypadState extends State<VirtualKeypad>
   }
 
   @override
-  void finishAutofillContext({bool shouldSave = true}) {}
+  void setEditingState(TextEditingValue value) {
+    _delegate!.reset(value);
+  }
+
+  @override
+  void updateConfig(TextInputConfiguration configuration) {
+    _delegate!.setInputType(configuration.inputType);
+  }
 }
 
 class VirtualKeypadRow extends StatelessWidget {

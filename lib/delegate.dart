@@ -5,7 +5,7 @@ import 'package:flutter/services.dart';
 class TextInputDelegate {
   String _text = '';
   TextSelection _selection = TextSelection.collapsed(offset: 0);
-  final TextInputClient _client;
+  final TextInputControl _control;
   TextInputType _inputType = TextInputType.text;
 
   bool _isComposing = false;
@@ -13,7 +13,7 @@ class TextInputDelegate {
   String _composingText = '';
   Timer? _composingTimer;
 
-  TextInputDelegate(this._client);
+  TextInputDelegate(this._control);
 
   TextEditingValue get value {
     return TextEditingValue(
@@ -56,7 +56,7 @@ class TextInputDelegate {
   }
 
   void _stopComposing() {
-    _client.updateEditingValue(value.copyWith(composing: TextRange.empty));
+    _control.updateEditingValue(value.copyWith(composing: TextRange.empty));
     _composingIndex = 0;
     _isComposing = false;
   }
@@ -91,7 +91,7 @@ class TextInputDelegate {
       _startComposing(keyText);
     }
 
-    _client.updateEditingValue(value);
+    _control.updateEditingValue(value);
   }
 
   void insertText(int start, String text) {
