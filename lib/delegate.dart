@@ -91,6 +91,7 @@ class TextInputDelegate {
       _startComposing(keyText);
     }
 
+    _control.setEditingState(value);
     _control.updateEditingValue(value);
   }
 

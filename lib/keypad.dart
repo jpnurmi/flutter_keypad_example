@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
-import 'delegate.dart';
+import 'input_control.dart';
 import 'layout.dart';
 
 class VirtualKeypad extends StatefulWidget {
@@ -9,21 +8,18 @@ class VirtualKeypad extends StatefulWidget {
   _VirtualKeypadState createState() => _VirtualKeypadState();
 }
 
-class _VirtualKeypadState extends State<VirtualKeypad> with TextInputControl {
-  TextInputDelegate? _delegate;
-  TextInputLayout _layout = TextInputLayout();
+class _VirtualKeypadState extends State<VirtualKeypad> {
+  final _inputControl = VirtualKeyboardControl();
 
   @override
   void initState() {
     super.initState();
-    TextInput.addInputControl(this);
-    TextInput.setCurrentInputControl(this);
+    _inputControl.register();
   }
 
   @override
   void dispose() {
-    TextInput.setCurrentInputControl(PlatformTextInputControl.instance);
-    TextInput.removeInputControl(this);
+    _inputControl.unregister();
     super.dispose();
   }
 
@@ -34,42 +30,31 @@ class _VirtualKeypadState extends State<VirtualKeypad> with TextInputControl {
       child: Container(
         color: Theme.of(context).backgroundColor,
         height: MediaQuery.of(context).size.height / 3,
-        child: Column(
-          children: [
-            for (final keys in _layout.keys)
-              Expanded(
-                child: VirtualKeypadRow(
-                  keys: keys,
-                  enabled: _delegate != null,
-                  onPressed: (String key) => _delegate!.addText(key),
-                  onLongPress: (String key) => _delegate!.addNumber(key),
-                ),
-              ),
-          ],
-        ),
+        child: ValueListenableBuilder<TextInputLayout>(
+            valueListenable: _inputControl.layout,
+            builder: (_, layout, __) {
+              return Column(
+                children: [
+                  for (final keys in layout.keys)
+                    Expanded(
+                      child: ValueListenableBuilder<bool>(
+                          valueListenable: _inputControl.attached,
+                          builder: (_, attached, __) {
+                            return VirtualKeypadRow(
+                              keys: keys,
+                              enabled: attached,
+                              onPressed: (String key) =>
+                                  _inputControl.addText(key),
+                              onLongPress: (String key) =>
+                                  _inputControl.addNumber(key),
+                            );
+                          }),
+                    ),
+                ],
+              );
+            }),
       ),
     );
-  }
-
-  @override
-  void attach(TextInputClient client, TextInputConfiguration configuration) {
-    setState(() => _delegate = TextInputDelegate(this));
-    updateConfig(configuration);
-  }
-
-  @override
-  void detach(TextInputClient client) {
-    setState(() => _delegate = null);
-  }
-
-  @override
-  void setEditingState(TextEditingValue value) {
-    _delegate!.reset(value);
-  }
-
-  @override
-  void updateConfig(TextInputConfiguration configuration) {
-    _delegate!.setInputType(configuration.inputType);
   }
 }
 
