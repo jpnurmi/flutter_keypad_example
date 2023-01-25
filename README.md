@@ -1,8 +1,8 @@
 # flutter_keypad_example
 
-A nostalgic keypad example for Flutter
+A nostalgic keypad example for Flutter.
 
-| **NOTE:** This example was written for [TextInputControl](https://github.com/flutter/flutter/pull/76072). |
+| **NOTE:** Requires Flutter 3.7.0 or later. |
 | --- |
 
 <a href="https://raw.githubusercontent.com/jpnurmi/flutter_keypad_example/main/flutter_keypad_example.gif">
