@@ -1,6 +1,6 @@
 # flutter_keypad_example
 
-A nostalgic keypad example for Flutter.
+A nostalgic keypad example for Flutter. [Web Demo](https://jpnurmi.dev/flutter_keypad_example/).
 
 | **NOTE:** Requires Flutter 3.7.0 or later. |
 | --- |
