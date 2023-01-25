@@ -8,7 +8,7 @@ class ExampleApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Custom VKB',
+      title: 'Keypad Example',
       home: HomePage(),
     );
   }
