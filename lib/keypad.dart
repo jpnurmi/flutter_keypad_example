@@ -27,32 +27,34 @@ class _VirtualKeypadState extends State<VirtualKeypad> {
   Widget build(BuildContext context) {
     return FocusScope(
       canRequestFocus: false,
-      child: Container(
-        color: Theme.of(context).backgroundColor,
-        height: MediaQuery.of(context).size.height / 3,
-        child: ValueListenableBuilder<TextInputLayout>(
-            valueListenable: _inputControl.layout,
-            builder: (_, layout, __) {
-              return Column(
-                children: [
-                  for (final keys in layout.keys)
-                    Expanded(
-                      child: ValueListenableBuilder<bool>(
-                          valueListenable: _inputControl.attached,
-                          builder: (_, attached, __) {
-                            return VirtualKeypadRow(
-                              keys: keys,
-                              enabled: attached,
-                              onPressed: (String key) =>
-                                  _inputControl.addText(key),
-                              onLongPress: (String key) =>
-                                  _inputControl.addNumber(key),
-                            );
-                          }),
-                    ),
-                ],
-              );
-            }),
+      child: TextFieldTapRegion(
+        child: Container(
+          color: Theme.of(context).colorScheme.background,
+          height: MediaQuery.of(context).size.height / 3,
+          child: ValueListenableBuilder<TextInputLayout>(
+              valueListenable: _inputControl.layout,
+              builder: (_, layout, __) {
+                return Column(
+                  children: [
+                    for (final keys in layout.keys)
+                      Expanded(
+                        child: ValueListenableBuilder<bool>(
+                            valueListenable: _inputControl.attached,
+                            builder: (_, attached, __) {
+                              return VirtualKeypadRow(
+                                keys: keys,
+                                enabled: attached,
+                                onPressed: (String key) =>
+                                    _inputControl.addText(key),
+                                onLongPress: (String key) =>
+                                    _inputControl.addNumber(key),
+                              );
+                            }),
+                      ),
+                  ],
+                );
+              }),
+        ),
       ),
     );
   }
@@ -69,7 +71,7 @@ class VirtualKeypadRow extends StatelessWidget {
     required List<String> keys,
     required ValueSetter<String> onPressed,
     required ValueSetter<String> onLongPress,
-  })   : _enabled = enabled,
+  })  : _enabled = enabled,
         _keys = keys,
         _onPressed = onPressed,
         _onLongPress = onLongPress;

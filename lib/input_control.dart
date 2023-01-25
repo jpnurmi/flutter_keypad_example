@@ -4,7 +4,7 @@ import 'package:flutter/services.dart';
 import 'delegate.dart';
 import 'layout.dart';
 
-class VirtualKeyboardControl extends TextInputControl {
+class VirtualKeyboardControl with TextInputControl {
   TextInputDelegate? _delegate;
   final _attached = ValueNotifier<bool>(false);
   final _layout = ValueNotifier<TextInputLayout>(TextInputLayout());

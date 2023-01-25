@@ -56,7 +56,7 @@ class TextInputDelegate {
   }
 
   void _stopComposing() {
-    _control.updateEditingValue(value.copyWith(composing: TextRange.empty));
+    TextInput.updateEditingValue(value.copyWith(composing: TextRange.empty));
     _composingIndex = 0;
     _isComposing = false;
   }
@@ -92,7 +92,7 @@ class TextInputDelegate {
     }
 
     _control.setEditingState(value);
-    _control.updateEditingValue(value);
+    TextInput.updateEditingValue(value);
   }
 
   void insertText(int start, String text) {
